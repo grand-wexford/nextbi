@@ -1,0 +1,70 @@
+@import 'globals';
+@include react-md-everything;
+body {
+    margin: 0;
+}
+
+.md-tile-content--left-icon {
+    padding-left: 16px;
+}
+
+.md-list--nested-1 .md-list-tile {
+    padding-left: 36px;
+}
+
+.md-list-tile {
+    padding-right: 8px;
+}
+
+.md-drawer--mini.md-drawer--mini {
+    width: 56px;
+}
+
+.md-drawer-relative--mini.md-drawer-relative--mini {
+    margin-left: 56px;
+}
+
+.md-toolbar--action-right {
+    margin-top: 8px;
+}
+
+h2,
+.md-headline,
+h3,
+.md-title,
+h4,
+.md-subheading-2,
+h5,
+.md-subheading-1,
+h6,
+.md-body-2,
+p,
+.md-body-1 {
+    color: rgba(42, 50, 57, 0.9);
+}
+
+.md-cell {
+    transition-duration: 0.4s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.graph-holder .md-card-text {
+    border-top: 1px solid lightgray;
+}
+
+.graph-holder .md-card-text:last-child {
+    padding-bottom: 0;
+}
+
+.graph-holder .md-card-text {
+    font-size: 14px;
+    padding: 0;
+}
+
+.windowed-mode {
+    position: absolute;
+    z-index: 1;
+    width: auto;
+    transition-duration: 0.4s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
