@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Card from 'react-md/lib/Cards/Card';
 import CardTitle from 'react-md/lib/Cards/CardTitle';
 import CardText from 'react-md/lib/Cards/CardText';
-import FontIcon from 'react-md/lib/FontIcons';
+// import FontIcon from 'react-md/lib/FontIcons';
 import Button from 'react-md/lib/Buttons/Button';
 import Graph1 from './components/Graph1';
 import Graph2 from './components/Graph2';
@@ -57,9 +57,9 @@ class CollapsibleCard extends Component {
     const windowedClass = this.state.windowed ? 'windowed-mode' : ''; // filter_none fullscreen fullscreen exit
 
     if( this.state.windowed || this.state.collapsed){
-      let classes = '';
+      // let classes = '';
     } else {
-      let classes = '';
+      // let classes = '';
     }
 
     return (

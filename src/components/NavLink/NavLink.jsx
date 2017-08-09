@@ -7,6 +7,7 @@ import ListItem from 'react-md/lib/Lists/ListItem';
 import Collapse from 'react-md/lib/Helpers/Collapse';
 // import Divider from 'react-md/lib/Dividers';
 import List from 'react-md/lib/Lists/List';
+import './NavLink.css';
 
 /**
  * @fix replace location to !!match when issues/419 will be closed ( https://github.com/mlaursen/react-md/issues/419 )
@@ -14,10 +15,9 @@ import List from 'react-md/lib/Lists/List';
  * @param {*} param0
  */
 class SubListItem extends PureComponent {
-
     static propTypes = {
         label: PropTypes.string.isRequired,
-        to: PropTypes.string,
+        path: PropTypes.string,
         icon: PropTypes.node
     }
 
@@ -25,17 +25,17 @@ class SubListItem extends PureComponent {
         id: '',
         label: '{no_title}',
         icon: 'chevron_right',
-        to: '#action'
+        path: '#action'
     }
 
     render() {
-        const { id, to, label, icon } = this.props;
+        const { id, path, label, icon } = this.props;
         const leftIcon = <FontIcon>{icon}</FontIcon>;
         return (
             <ListItem
                 key={id}
                 component={RouterLink}
-                to={to}
+                to={path}
                 primaryText={label}
                 leftIcon={leftIcon} />
         );
@@ -43,7 +43,6 @@ class SubListItem extends PureComponent {
 }
 
 class SubList extends PureComponent {
-
     static propTypes = {
         collapsed: PropTypes.bool,
         children: PropTypes.array
@@ -63,7 +62,7 @@ class SubList extends PureComponent {
                             <SubListItem
                                 key={child.id}
                                 id={child.id}
-                                to={child.to}
+                                path={child.path}
                                 location={location}
                                 label={child.label}
                                 icon={child.icon} />
@@ -80,25 +79,27 @@ class NavLink extends PureComponent {
         super(props);
 
         this.state = {
-            collapsed: true
+            collapsed: this.props.collapsed
         };
     }
     static propTypes = {
         label: PropTypes.string.isRequired,
-        to: PropTypes.string,
+        path: PropTypes.string,
         exact: PropTypes.bool,
+        collapsed: PropTypes.bool,
         icon: PropTypes.node
     }
     static defaultProps = {
         id: '',
         label: '{no_title}',
-        icon: 'chevron_right',
-        to: '#action',
+        icon: 'radio_button_unchecked',
+        path: '#action',
+        collapsed: true,
         children: []
     }
 
     _handlerMenuItemClick = e => {
-        if (this.props.children.length > 0) {
+        if (this.props.children.length) {
             e.preventDefault();
             this.setState({
                 collapsed: !this.state.collapsed
@@ -109,25 +110,35 @@ class NavLink extends PureComponent {
     render() {
         const {
             label,
-            to,
+            path,
             exact,
             icon,
             location,
+            collapsed,
             children
         } = this.props;
 
+        let rightIcon;
+        if (children.length) {
+            rightIcon = this.state.collapsed ? <FontIcon>{'keyboard_arrow_up'}</FontIcon> : <FontIcon>{'keyboard_arrow_down'}</FontIcon>;
+        } else {
+            rightIcon = <div></div>;
+        }
+
         const leftIcon = <FontIcon>{icon}</FontIcon>;
+
         return (
-            <Route path={to} exact={exact}>
+            <Route path={path} exact={exact}>
                 {({ match }) => {
                     return (
                         <div>
                             <ListItem
                                 component={RouterLink}
-                                active={location.pathname === to}
-                                to={to}
+                                active={location.pathname === path}
+                                to={path}
                                 primaryText={label}
                                 leftIcon={leftIcon}
+                                rightIcon={rightIcon}
                                 onClick={this._handlerMenuItemClick} /> {children.length > 0 && <SubList collapsed={this.state.collapsed} children={children} />}
                         </div>
                     );

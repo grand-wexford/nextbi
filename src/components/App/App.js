@@ -15,14 +15,76 @@ import Page1 from '../../Page1';
 import Page2 from '../../Page2';
 import Page3 from '../../Page3';
 
-import navItems from '../../menu';
+import navItems from '../../json/menu';
 
 const AvatarIcon = <Chip
   label="Artem Panosyan"
-  avatar={<Avatar icon={<FontIcon>{'pets'}</FontIcon>}
+  avatar={<Avatar
+    icon={<FontIcon>{'pets'}</FontIcon>}
     suffix={'blue-grey'}
   />}
 />;
+
+const getRouteItems = () => {
+  let routeItems = [];
+
+  navItems.forEach(item => {
+    if (!!item.path) {
+      routeItems.push(item);
+    }
+    if (item.children) {
+      item.children.forEach(item => {
+        routeItems.push(item);
+      });
+    }
+  });
+
+  return routeItems;
+};
+
+const getComponent = ({ type, action }) => {
+  let itemComponent;
+
+  switch (type) {
+    case 'home':
+      itemComponent = Home;
+      break;
+
+    case 'users':
+      switch (action) {
+        case 'edit':
+          itemComponent = UserEdit;
+          break;
+
+        case 'list':
+          itemComponent = UsersList;
+          break;
+
+        default:
+          itemComponent = NotFound;
+          break;
+      }
+      break;
+
+    case 'page-1':
+      itemComponent = Page1;
+      break;
+
+    case 'page-2':
+      itemComponent = Page2;
+      break;
+
+    case 'page-3':
+      itemComponent = Page3;
+      break;
+
+    default:
+      itemComponent = NotFound;
+      break;
+  }
+
+  return itemComponent;
+};
 
 /**
  * 
@@ -41,16 +103,11 @@ class App extends Component {
             defaultVisible={true}
             toolbarActions={AvatarIcon}
             mobileDrawerType={NavigationDrawer.DrawerTypes.TEMPORARY_MINI}
-            tabletDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT_MINI}
-            desktopDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT_MINI}
-            navItems={navItems.map(item => <NavLink {...item} location={location} key={item.label} />)}>
+            tabletDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT}
+            desktopDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT}
+            navItems={navItems.map(item => <NavLink {...item} location={location} key={item.id} />)}>
             <Switch key={location.key}>
-              <Route exact path="/" location={location} component={Home} />
-              <Route path="/page-1" location={location} component={Page1} />
-              <Route path="/page-2" location={location} component={Page2} />
-              <Route path="/page-3" location={location} component={Page3} />
-              <Route path="/user-edit" location={location} component={UserEdit} />
-              <Route path="/users-list" location={location} component={UsersList} />
+              {getRouteItems().map(item => <Route exact={!!item.exact} path={item.path} location={location} component={getComponent(item)} key={item.id} />)}
               <Route path="*" location={location} component={NotFound} />
             </Switch>
           </NavigationDrawer>

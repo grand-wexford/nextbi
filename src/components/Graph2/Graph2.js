@@ -12,7 +12,7 @@ export class Graph2 extends Component {
 
         const svgNode = document.querySelector('svg');
         const exampleNode = document.querySelector('.md-cell--12');
-        const exampleNodeHeight = document.querySelector('#main-content');
+        // const exampleNodeHeight = document.querySelector('#main-content');
 
         svgNode.style.width = exampleNode.offsetWidth + 'px';
         // svgNode.style.height = ( exampleNodeHeight.offsetHeight - 100 ) + 'px';

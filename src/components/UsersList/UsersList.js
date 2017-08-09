@@ -8,7 +8,7 @@ import Switch from 'react-md/lib/SelectionControls/Switch';
 import Button from 'react-md/lib/Buttons/Button';
 import Paper from 'react-md/lib/Papers';
 import browserHistory from 'history/createBrowserHistory';
-import './UsersList.css'
+import './UsersList.css';
 
 class UsersList extends Component {
   render() {

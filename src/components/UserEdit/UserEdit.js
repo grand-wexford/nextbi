@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import TableHeader from 'react-md/lib/DataTables/TableHeader';
-import DataTable from 'react-md/lib/DataTables/DataTable';
-import TableRow from 'react-md/lib/DataTables/TableRow';
-import TableColumn from 'react-md/lib/DataTables/TableColumn';
-import TableBody from 'react-md/lib/DataTables/TableBody';
-import Switch from 'react-md/lib/SelectionControls/Switch';
+// import TableHeader from 'react-md/lib/DataTables/TableHeader';
+// import DataTable from 'react-md/lib/DataTables/DataTable';
+// import TableRow from 'react-md/lib/DataTables/TableRow';
+// import TableColumn from 'react-md/lib/DataTables/TableColumn';
+// import TableBody from 'react-md/lib/DataTables/TableBody';
+// import Switch from 'react-md/lib/SelectionControls/Switch';
 import Button from 'react-md/lib/Buttons/Button';
 import Paper from 'react-md/lib/Papers';
 import TextField from 'react-md/lib/TextFields';
-import FontIcon from 'react-md/lib/FontIcons';
+// import FontIcon from 'react-md/lib/FontIcons';
 
 import './UserEdit.css';
 
