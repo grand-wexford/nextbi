@@ -114,18 +114,18 @@ class NavLink extends PureComponent {
             exact,
             icon,
             location,
-            collapsed,
             children
         } = this.props;
 
-        let rightIcon;
+        let collapseIcon;
         if (children.length) {
-            rightIcon = this.state.collapsed ? <FontIcon>{'keyboard_arrow_up'}</FontIcon> : <FontIcon>{'keyboard_arrow_down'}</FontIcon>;
+            collapseIcon = this.state.collapsed ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
         } else {
-            rightIcon = <div></div>;
+            collapseIcon = <div></div>;
         }
 
         const leftIcon = <FontIcon>{icon}</FontIcon>;
+        const rightIcon = <FontIcon>{collapseIcon}</FontIcon>;
 
         return (
             <Route path={path} exact={exact}>

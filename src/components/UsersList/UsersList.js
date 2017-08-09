@@ -18,7 +18,7 @@ class UsersList extends Component {
       <h3 className="md-cell md-cell--12 md-text-container">Учётные записи</h3>
       <div className="md-cell md-cell--12">
       <Paper zDepth={1} style={{padding: '20px'}}>
-        <Button flat primary label="Добавить пользователя" href='/user-edit'>person_add</Button><Button flat primary label="Go Back"  onClick={browserHistory.goBack}></Button>
+        <Button flat primary label="Добавить пользователя" href='/users/edit'>person_add</Button><Button flat primary label="Go Back"  onClick={browserHistory.goBack}></Button>
         <DataTable plain>
           <TableHeader>
             <TableRow>
@@ -35,7 +35,7 @@ class UsersList extends Component {
                 <Switch id="switch1" name="lights" label="" defaultChecked />
               </TableColumn>
               <TableColumn>
-                <Button icon tooltipLabel="Редактировать" href='/user-edit'>edit</Button>
+                <Button icon tooltipLabel="Редактировать" href='/users/edit'>edit</Button>
               </TableColumn>
               <TableColumn>
                 <Button icon tooltipLabel="Удалить">delete</Button>
@@ -44,7 +44,7 @@ class UsersList extends Component {
             <TableRow>
               <TableColumn>Петров</TableColumn>
               <TableColumn><Switch id="switch2" name="lights" /></TableColumn>
-              <TableColumn><Button icon href='/user-edit'>edit</Button></TableColumn>
+              <TableColumn><Button icon href='/users/edit'>edit</Button></TableColumn>
               <TableColumn><Button icon >delete</Button></TableColumn>
             </TableRow>
           </TableBody>

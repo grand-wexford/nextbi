@@ -10,12 +10,14 @@ import Home from '../Home';
 import NotFound from '../NotFound';
 import UserEdit from '../UserEdit';
 import UsersList from '../UsersList';
+import remoteComponent from '../remoteComponent';
 
 import Page1 from '../../Page1';
 import Page2 from '../../Page2';
 import Page3 from '../../Page3';
 
 import navItems from '../../json/menu';
+// import {REQUEST_URL} from '../../constants';
 
 const AvatarIcon = <Chip
   label="Artem Panosyan"
@@ -42,12 +44,30 @@ const getRouteItems = () => {
   return routeItems;
 };
 
+const getPath = ({ path, type, action, module }) => {
+  let routePath;
+
+  module = module || '{module_name_not_set}';
+
+  if (type === 'remote') {
+    routePath = '/remote/:module';
+  } else {
+    routePath = path;
+  }
+console.log(routePath);
+  return routePath;
+};
+
 const getComponent = ({ type, action }) => {
   let itemComponent;
 
   switch (type) {
     case 'home':
       itemComponent = Home;
+      break;
+
+    case 'remote':
+      itemComponent = remoteComponent;
       break;
 
     case 'users':
@@ -107,7 +127,7 @@ class App extends Component {
             desktopDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT}
             navItems={navItems.map(item => <NavLink {...item} location={location} key={item.id} />)}>
             <Switch key={location.key}>
-              {getRouteItems().map(item => <Route exact={!!item.exact} path={item.path} location={location} component={getComponent(item)} key={item.id} />)}
+              {getRouteItems().map(item => <Route exact={item.exact} path={getPath(item)} location={location} frontend={item.frontend} component={getComponent(item)} key={item.id} />)}
               <Route path="*" location={location} component={NotFound} />
             </Switch>
           </NavigationDrawer>

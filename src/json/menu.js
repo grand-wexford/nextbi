@@ -93,6 +93,20 @@ export const navItems = [
         label: "Test",
         action: "edit",
 
+    }, {
+        id: "remote",
+        type: "remote",
+        module: 'remoteModule1',
+        path: "/remote/remoteModule1",
+        label: "RemoteComponent 1",
+        action: "remote-action",
+    }, {
+        id: "remote2",
+        type: "remote",
+        module: 'remoteModule2',
+        path: "/remote/remoteModule2",
+        label: "RemoteComponent 2",
+        action: "remote-action",
     }
 ];
 export default navItems;
