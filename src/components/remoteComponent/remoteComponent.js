@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { REQUEST_URL } from '../../constants';
+import { COMPONENT_REQUEST_URL } from '../../constants';
 import './remoteComponent.css';
 
 export class remoteComponent extends Component {
@@ -40,7 +40,9 @@ export class remoteComponent extends Component {
 
     render() {
         return (
-            <iframe src={REQUEST_URL + this.props.match.params.component} className="component-frame" style={{ height: this.state.frameHeight }}></iframe>
+            <iframe src={COMPONENT_REQUEST_URL + this.props.match.params.component} className="component-frame" style={{ height: this.state.frameHeight }}>
+                {'frame not supported'}
+            </iframe>
         );
     }
 }

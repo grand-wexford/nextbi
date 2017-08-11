@@ -74,6 +74,12 @@ export const navItems = [
             }
         ]
     }, {
+        id: "some-random-page",
+        component: "some-random-page",
+        label: "404",
+        action: "edit",
+
+    }, {
         id: "test",
         component: "UserEdit",
         label: "Test",

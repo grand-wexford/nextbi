@@ -4,22 +4,23 @@ import NavigationDrawer from 'react-md/lib/NavigationDrawers';
 import Avatar from 'react-md/lib/Avatars';
 import FontIcon from 'react-md/lib/FontIcons';
 import Chip from 'react-md/lib/Chips';
+import { STATIC_REQUEST_URL } from '../../constants';
 
 import NavLink from '../NavLink';
 import Home from '../Home';
 import NotFound from '../NotFound';
 import UserEdit from '../UserEdit';
 import UsersList from '../UsersList';
+// import Menu from '../Menu';
 import remoteComponent from '../remoteComponent';
 
 import Page1 from '../../Page1';
 import Page2 from '../../Page2';
 import Page3 from '../../Page3';
 
-import navItems from '../../json/menu';
 
 const CORE_COMPONENTS = {
-  '': Home,
+  'Home': Home,
   'UserEdit': UserEdit,
   'UsersList': UsersList,
   'NotFound': NotFound,
@@ -37,61 +38,7 @@ const AvatarIcon = <Chip
   />}
 />;
 
-const isRemoteComponent = (component) => {
-  return !CORE_COMPONENTS[component];
-};
 
-const getPath = ({ component }) => {
-  if (component===undefined) {
-    return;
-  }
-    if (component === 'Home'){
-    return '/';
-  }
-  return isRemoteComponent(component) ? '/remote/:component' : '/' + component;
-};
-
-const getLink = ({ component }) => {
-  if (component===undefined) {
-    return;
-  }
-  if (component === 'Home'){
-    return '/';
-  }
-  return isRemoteComponent(component) ? '/remote/' + component : '/' + component;
-};
-
-const buildMenuItems = (items = navItems) => {
-  let menuItems = [];
-
-  items.forEach(item => {
-    menuItems.push({
-      ...item,
-      route: getPath(item),
-      path: getLink(item),
-      children: item.children && buildMenuItems(item.children)
-    });
-  });
-
-  return menuItems;
-};
-
-const MENU = buildMenuItems();
-console.log(MENU);
-const getRouteItems = () => {
-  let routeItems = [];
-
-  MENU.forEach(item => {
-    (!!item.component && !isRemoteComponent(item.component) && routeItems.push(item));
-    (item.children && item.children.forEach(item => { !isRemoteComponent(item.component) && routeItems.push(item); }));
-  });
-
-  return routeItems;
-};
-
-const getComponent = ({ component }) => {
-  return CORE_COMPONENTS[component];
-};
 
 /**
  * 
@@ -100,23 +47,100 @@ const getComponent = ({ component }) => {
  * @extends {Component}
  */
 class App extends Component {
-  render() {
+  constructor() {
+    super();
+    this.state = { menu: [] };
+    this.MENU = [];
 
+  }
+
+  fetchPosts = () => {
+    const URL = STATIC_REQUEST_URL + "menu.json";
+    return fetch(URL, { method: 'GET' })
+      .then(response => Promise.all([response, response.json()]));
+  }
+
+  componentWillMount() {
+    this.fetchPostsWithRedux();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('nextState: ', nextState);
+    console.log('this.state: ', this.state);
+    if (nextState && nextState.menu) { // && nextState.menu.length !== this.state.menu.length
+      this.MENU = this.buildMenuItems(nextState.menu);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  fetchPostsWithRedux = () => {
+    return this.fetchPosts().then(([response, json]) => {
+      if (response.status === 200) {
+        this.setState({ ...this.state, menu: json });
+      } else {
+        console.log('{error_menu_load}');
+      }
+    });
+  }
+
+  buildMenuItems = (items = this.state.menu) => {
+    let menuItems = [];
+
+    items.forEach(item => {
+      menuItems.push({
+        ...item,
+        route: this.getPath(item, true),
+        path: this.getPath(item),
+        children: item.children && this.buildMenuItems(item.children)
+      });
+    });
+
+    return menuItems;
+  }
+
+  isRemoteComponent = component => {
+    return !CORE_COMPONENTS[component];
+  }
+
+  getPath = ({ component, isRoute = false }) => {
+    if (!component) return;
+    if (component === 'Home') return '/';
+    if (this.isRemoteComponent(component)) return isRoute ? '/r/:component' : '/r/' + component;
+
+    return '/' + component;
+  }
+
+  getComponent = component => {
+    component = component || 'NotFound';
+    return CORE_COMPONENTS[component];
+  }
+
+  getRouteItems = () => {
+    let routeItems = [];
+
+    this.MENU.forEach(item => {
+      (!!item.component && !this.isRemoteComponent(item.component) && routeItems.push(item));
+      (item.children && item.children.forEach(item => { !this.isRemoteComponent(item.component) && routeItems.push(item); }));
+    });
+    return routeItems;
+  }
+
+  render() {
     return (
       <Route
         render={({ location }) => (
           <NavigationDrawer
             drawerTitle="Nextbi One"
-            toolbarTitle=""
             defaultVisible={true}
             toolbarActions={AvatarIcon}
-            mobileDrawerType={NavigationDrawer.DrawerTypes.TEMPORARY_MINI}
-            tabletDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT}
+            mobileDrawerType={NavigationDrawer.DrawerTypes.TEMPORARY}
             desktopDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT}
-            navItems={MENU.map(item => <NavLink {...item} location={location} key={item.id} />)}>
+            navItems={this.MENU.map(item => <NavLink {...item} location={location} key={item.id} />)}>
             <Switch key={location.key}>
-              {getRouteItems().map(item => <Route exact={item.route === '/' ? true : item.exact} path={item.route} location={location} component={getComponent(item)} key={item.id} />)}
-              <Route path="/remote/:component" location={location} component={remoteComponent} />
+              {this.getRouteItems().map(item => <Route exact={item.route === '/' ? true : item.exact} path={item.route} location={location} component={this.getComponent(item.component)} key={item.id} />)}
+              <Route path="/r/:component" location={location} component={remoteComponent} />
               <Route path="*" location={location} component={NotFound} />
             </Switch>
           </NavigationDrawer>
