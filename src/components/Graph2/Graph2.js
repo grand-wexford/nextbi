@@ -218,8 +218,6 @@ export class Graph2 extends Component {
             console.log(`Clicked link between ${source} and ${target}`);
         };
         return (
-
-
             <Graph
                 id='graph-id' // id is mandatory, if no id is defined rd3g will throw an error
                 data={data}

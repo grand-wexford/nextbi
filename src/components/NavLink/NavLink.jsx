@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Link as RouterLink, Route } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import FontIcon from 'react-md/lib/FontIcons';
 import ListItem from 'react-md/lib/Lists/ListItem';
@@ -29,11 +29,12 @@ class SubListItem extends PureComponent {
     }
 
     render() {
-        const { id, path, label, icon } = this.props;
+        const { id, path, label, icon, location } = this.props;
         const leftIcon = <FontIcon>{icon}</FontIcon>;
         return (
             <ListItem
                 key={id}
+                active={location.pathname === path}
                 component={RouterLink}
                 to={path}
                 primaryText={label}
@@ -52,22 +53,17 @@ class SubList extends PureComponent {
         children: []
     }
 
+    // Перестаёт рендериться при меняющемся active
+    // shouldComponentUpdate = (nextProps, nextState) => {
+    //     return nextProps.collapsed !== this.props.collapsed;
+    // }
+
     render() {
         const { children, collapsed, location } = this.props;
         return (
             <Collapse collapsed={collapsed}>
                 <List>
-                    {children && children.map(child => {
-                        return (
-                            <SubListItem
-                                key={child.id}
-                                id={child.id}
-                                path={child.path}
-                                location={location}
-                                label={child.label}
-                                icon={child.icon} />
-                        );
-                    })}
+                    {children.map(child => <SubListItem key={child.id} location={location} {...child} />)}
                 </List>
             </Collapse>
         );
@@ -75,20 +71,21 @@ class SubList extends PureComponent {
 }
 
 class NavLink extends PureComponent {
-    constructor(props) {
-        super(props);
-
+    constructor(...props) {
+        super(...props);
         this.state = {
             collapsed: this.props.collapsed
         };
     }
+
     static propTypes = {
         label: PropTypes.string.isRequired,
         path: PropTypes.string,
-        exact: PropTypes.bool,
         collapsed: PropTypes.bool,
-        icon: PropTypes.node
+        icon: PropTypes.node,
+        children: PropTypes.array
     }
+
     static defaultProps = {
         id: '',
         label: '{no_title}',
@@ -98,10 +95,16 @@ class NavLink extends PureComponent {
         children: []
     }
 
+    // Перестаёт рендериться при меняющемся active
+    // shouldComponentUpdate = (nextProps, nextState) => {
+    //     return nextState.collapsed !== this.state.collapsed;
+    // }
+
     _handlerMenuItemClick = e => {
         if (this.props.children.length) {
             e.preventDefault();
             this.setState({
+                ...this.state,
                 collapsed: !this.state.collapsed
             });
         }
@@ -110,40 +113,27 @@ class NavLink extends PureComponent {
     render() {
         const {
             label,
-            path,
-            exact,
             icon,
             location,
+            path,
             children
         } = this.props;
 
-        let collapseIcon;
-        if (children.length) {
-            collapseIcon = this.state.collapsed ? 'keyboard_arrow_up' : 'keyboard_arrow_down';
-        } else {
-            collapseIcon = <div></div>;
-        }
-
+        const rightIcon = children.length ? <FontIcon>{this.state.collapsed ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}</FontIcon> : null;
         const leftIcon = <FontIcon>{icon}</FontIcon>;
-        const rightIcon = <FontIcon>{collapseIcon}</FontIcon>;
 
         return (
-            <Route path={path} exact={exact}>
-                {({ match }) => {
-                    return (
-                        <div>
-                            <ListItem
-                                component={RouterLink}
-                                active={location.pathname === path}
-                                to={path}
-                                primaryText={label}
-                                leftIcon={leftIcon}
-                                rightIcon={rightIcon}
-                                onClick={this._handlerMenuItemClick} /> {children.length > 0 && <SubList collapsed={this.state.collapsed} children={children} />}
-                        </div>
-                    );
-                }}
-            </Route>
+            <div>
+                <ListItem
+                    component={RouterLink}
+                    active={location.pathname === path}
+                    to={path}
+                    primaryText={label}
+                    leftIcon={leftIcon}
+                    rightIcon={rightIcon}
+                    onClick={this._handlerMenuItemClick} />
+                {children.length > 0 && <SubList collapsed={this.state.collapsed} children={children} location={location} />}
+            </div>
         );
     }
 }

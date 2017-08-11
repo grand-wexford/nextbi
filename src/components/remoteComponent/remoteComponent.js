@@ -1,36 +1,46 @@
 import React, { Component } from 'react';
 import { REQUEST_URL } from '../../constants';
+import './remoteComponent.css';
 
 export class remoteComponent extends Component {
-    constructor(...args) {
-        super(...args);
-        this.state = { componentHTML: '<b>загрузка...</b>', frameHeight: "400px" };
+    constructor(...params) {
+        super(...params);
+        this.state = { frameHeight: "400px" };
     }
 
-    fetchData = () => {
-        fetch(REQUEST_URL + this.props.match.params.module, { method: 'get', headers: { 'Content-Type': 'application/json' } })
-            .then((res) => {
-                return res.text();
-            })
-            .then((res) => {
-                this.setState({ ...this.state, componentHTML: res });
-            });
+    // fetchData = () => {
+    //     fetch(REQUEST_URL + this.props.match.params.module, { method: 'get', headers: { 'Content-Type': 'application/json' } })
+    //         .then((res) => {
+    //             return res.text();
+    //         })
+    //         .then((res) => {
+    //             this.setState({ ...this.state, componentHTML: res });
+    //         });
+    // }
+
+    componentDidMount = () => {
+        // this.fetchData();
+        this.setHeight();
+
+        let timer;
+        window.addEventListener('resize', () => {
+            (timer && clearTimeout(timer));
+            timer = setTimeout(this.setHeight, 300);
+        }, true);
     }
 
-    componentDidMount = function () {
-        this.fetchData();
-        console.log(document.getElementById('main-content').height);
-        let mainContent = document.getElementById('main-content').height;
-        this.state.frameHeight = mainContent + 'px';
+    shouldComponentUpdate = (nextProps, nextState) => {
+        return this.state.frameHeight !== nextState.frameHeight;
+    }
+
+    setHeight = () => {
+        let mainContent = window.innerHeight - document.getElementsByTagName('header')[0].clientHeight - 6;
+        this.setState({ ...this.state, frameHeight: mainContent + 'px' });
     }
 
     render() {
         return (
-            <div>
-                <h1>remoteComponent</h1>
-                <iframe src="/r" style={{ border: "1px solid gray", width: "100%", height: this.state.frameHeight }}></iframe>
-                <div dangerouslySetInnerHTML={{ __html: this.state.componentHTML }}></div>
-            </div>
+            <iframe src={REQUEST_URL + this.props.match.params.component} className="component-frame" style={{ height: this.state.frameHeight }}></iframe>
         );
     }
 }

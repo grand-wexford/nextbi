@@ -17,7 +17,17 @@ import Page2 from '../../Page2';
 import Page3 from '../../Page3';
 
 import navItems from '../../json/menu';
-// import {REQUEST_URL} from '../../constants';
+
+const CORE_COMPONENTS = {
+  '': Home,
+  'UserEdit': UserEdit,
+  'UsersList': UsersList,
+  'NotFound': NotFound,
+  'Page1': Page1,
+  'Page2': Page2,
+  'Page3': Page3,
+  'remoteComponent': remoteComponent
+};
 
 const AvatarIcon = <Chip
   label="Artem Panosyan"
@@ -27,83 +37,60 @@ const AvatarIcon = <Chip
   />}
 />;
 
+const isRemoteComponent = (component) => {
+  return !CORE_COMPONENTS[component];
+};
+
+const getPath = ({ component }) => {
+  if (component===undefined) {
+    return;
+  }
+    if (component === 'Home'){
+    return '/';
+  }
+  return isRemoteComponent(component) ? '/remote/:component' : '/' + component;
+};
+
+const getLink = ({ component }) => {
+  if (component===undefined) {
+    return;
+  }
+  if (component === 'Home'){
+    return '/';
+  }
+  return isRemoteComponent(component) ? '/remote/' + component : '/' + component;
+};
+
+const buildMenuItems = (items = navItems) => {
+  let menuItems = [];
+
+  items.forEach(item => {
+    menuItems.push({
+      ...item,
+      route: getPath(item),
+      path: getLink(item),
+      children: item.children && buildMenuItems(item.children)
+    });
+  });
+
+  return menuItems;
+};
+
+const MENU = buildMenuItems();
+console.log(MENU);
 const getRouteItems = () => {
   let routeItems = [];
 
-  navItems.forEach(item => {
-    if (!!item.path) {
-      routeItems.push(item);
-    }
-    if (item.children) {
-      item.children.forEach(item => {
-        routeItems.push(item);
-      });
-    }
+  MENU.forEach(item => {
+    (!!item.component && !isRemoteComponent(item.component) && routeItems.push(item));
+    (item.children && item.children.forEach(item => { !isRemoteComponent(item.component) && routeItems.push(item); }));
   });
 
   return routeItems;
 };
 
-const getPath = ({ path, type, action, module }) => {
-  let routePath;
-
-  module = module || '{module_name_not_set}';
-
-  if (type === 'remote') {
-    routePath = '/remote/:module';
-  } else {
-    routePath = path;
-  }
-console.log(routePath);
-  return routePath;
-};
-
-const getComponent = ({ type, action }) => {
-  let itemComponent;
-
-  switch (type) {
-    case 'home':
-      itemComponent = Home;
-      break;
-
-    case 'remote':
-      itemComponent = remoteComponent;
-      break;
-
-    case 'users':
-      switch (action) {
-        case 'edit':
-          itemComponent = UserEdit;
-          break;
-
-        case 'list':
-          itemComponent = UsersList;
-          break;
-
-        default:
-          itemComponent = NotFound;
-          break;
-      }
-      break;
-
-    case 'page-1':
-      itemComponent = Page1;
-      break;
-
-    case 'page-2':
-      itemComponent = Page2;
-      break;
-
-    case 'page-3':
-      itemComponent = Page3;
-      break;
-
-    default:
-      itemComponent = NotFound;
-      break;
-  }
-
-  return itemComponent;
+const getComponent = ({ component }) => {
+  return CORE_COMPONENTS[component];
 };
 
 /**
@@ -114,20 +101,22 @@ const getComponent = ({ type, action }) => {
  */
 class App extends Component {
   render() {
+
     return (
       <Route
         render={({ location }) => (
           <NavigationDrawer
-            drawerTitle="Nextbi"
+            drawerTitle="Nextbi One"
             toolbarTitle=""
             defaultVisible={true}
             toolbarActions={AvatarIcon}
             mobileDrawerType={NavigationDrawer.DrawerTypes.TEMPORARY_MINI}
             tabletDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT}
             desktopDrawerType={NavigationDrawer.DrawerTypes.PERSISTENT}
-            navItems={navItems.map(item => <NavLink {...item} location={location} key={item.id} />)}>
+            navItems={MENU.map(item => <NavLink {...item} location={location} key={item.id} />)}>
             <Switch key={location.key}>
-              {getRouteItems().map(item => <Route exact={item.exact} path={getPath(item)} location={location} frontend={item.frontend} component={getComponent(item)} key={item.id} />)}
+              {getRouteItems().map(item => <Route exact={item.route === '/' ? true : item.exact} path={item.route} location={location} component={getComponent(item)} key={item.id} />)}
+              <Route path="/remote/:component" location={location} component={remoteComponent} />
               <Route path="*" location={location} component={NotFound} />
             </Switch>
           </NavigationDrawer>
