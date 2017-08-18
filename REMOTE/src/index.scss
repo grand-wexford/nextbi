@@ -1,0 +1,24 @@
+@import 'globals';
+@include react-md-everything;
+body {
+    margin: 0;
+}
+
+$blue: #3bbfce;
+p {
+    color: $blue;
+}
+
+.App {
+    .graph-holder {
+        // background: $md-blue-grey-50;
+        // color: $md-blue-grey-500;
+    }
+    .menu-holder {
+        // background: $md-blue-grey-100;
+        // color: $md-blue-grey-500;
+    }
+    .cursor-default{
+        cursor: default;
+    }
+}
