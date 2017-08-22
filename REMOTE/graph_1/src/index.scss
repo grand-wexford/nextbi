@@ -1,0 +1,40 @@
+@import 'globals';
+@include react-md-everything;
+body {
+    margin: 0;
+}
+
+$blue: #3bbfce;
+p {
+    color: $blue;
+}
+
+.App {
+    .graph-holder {
+        // background: $md-blue-grey-50;
+        // color: $md-blue-grey-500;
+    }
+    .menu-holder {
+        // background: $md-blue-grey-100;
+        // color: $md-blue-grey-500;
+    }
+    .cursor-default{
+        cursor: default;
+    }
+    .graph-holder{
+        margin: 0;
+        padding: 0;
+    }
+    .map-holder{
+        border: 1px solid gray;
+        border-radius: 3px 0 0 0;
+        position: relative;
+        top: 100%;
+        margin-top: -200px;
+        z-index: 1;
+        background: white;
+        height: 200px;
+        width: 200px;
+        float: right;
+    }
+}
