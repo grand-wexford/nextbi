@@ -8,23 +8,19 @@ export class remoteComponent extends Component {
         this.state = { frameHeight: "400px" };
     }
 
-    // fetchData = () => {
-    //     fetch(REQUEST_URL + this.props.match.params.module, { method: 'get', headers: { 'Content-Type': 'application/json' } })
-    //         .then((res) => {
-    //             return res.text();
-    //         })
-    //         .then((res) => {
-    //             this.setState({ ...this.state, componentHTML: res });
-    //         });
-    // }
+    fetchData = () => {
+        fetch(COMPONENT_REQUEST_URL + this.props.match.params.component, { method: 'get', headers: { 'Content-Type': 'application/json' } })
+            .then((res) => res.text())
+            .then((res) => this.setState({ ...this.state, componentHTML: res }));
+    }
 
     componentDidMount = () => {
-        // this.fetchData();
+        this.fetchData();
         this.setHeight();
 
         let timer;
         window.addEventListener('resize', () => {
-            (timer && clearTimeout(timer));
+            timer && clearTimeout(timer);
             timer = setTimeout(this.setHeight, 300);
         }, true);
     }

@@ -17,7 +17,20 @@ export class Graph2 extends Component {
         svgNode.style.width = exampleNode.offsetWidth + 'px';
         // svgNode.style.height = ( exampleNodeHeight.offsetHeight - 100 ) + 'px';
     }
-
+    convertGraph = (graph) => {
+      return {
+        ...graph,
+        nodes: graph.nodes.map(k => ({
+          ...k,
+          image: k.group
+        })),
+        links: graph.links.map(k => ({
+          ...k,
+          source: graph.nodes[k.source].id,
+          target: graph.nodes[k.target].id
+        }))
+      };
+    }
     render() {
         // Graph payload (with minimalist structure)
         const data = {
@@ -883,7 +896,7 @@ export class Graph2 extends Component {
         return (
             <Graph
                 id='graph-id' // id is mandatory, if no id is defined rd3g will throw an error
-                data={data}
+                data={this.convertGraph(data)}
                 config={myConfig}
                 onClickNode={onClickNode}
                 onClickLink={onClickLink}

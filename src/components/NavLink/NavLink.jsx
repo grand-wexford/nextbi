@@ -16,8 +16,10 @@ import './NavLink.css';
  */
 class SubListItem extends PureComponent {
     static propTypes = {
+        id: PropTypes.string,
         label: PropTypes.string.isRequired,
         path: PropTypes.string,
+        location: PropTypes.object,
         icon: PropTypes.node
     }
 
@@ -46,7 +48,8 @@ class SubListItem extends PureComponent {
 class SubList extends PureComponent {
     static propTypes = {
         collapsed: PropTypes.bool,
-        children: PropTypes.array
+        children: PropTypes.array,
+        location: PropTypes.object
     }
     static defaultProps = {
         collapsed: true,
@@ -63,7 +66,7 @@ class SubList extends PureComponent {
         return (
             <Collapse collapsed={collapsed}>
                 <List>
-                    {children.map(child => <SubListItem key={child.id} location={location} {...child} />)}
+                    {children.map((child, i) => <SubListItem key={i} location={location} {...child} />)}
                 </List>
             </Collapse>
         );
@@ -81,6 +84,7 @@ class NavLink extends PureComponent {
     static propTypes = {
         label: PropTypes.string.isRequired,
         path: PropTypes.string,
+        location: PropTypes.object,
         collapsed: PropTypes.bool,
         icon: PropTypes.node,
         children: PropTypes.array
